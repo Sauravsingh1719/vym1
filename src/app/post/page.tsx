@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +17,9 @@ const schema = z.object({
   message: z.string().min(20, "Message must be at least 20 characters long").max(500, "Message cannot exceed 500 characters"),
 });
 
+// Define the type for form data
+type FormData = z.infer<typeof schema>;
+
 const words = [
   { text: "Something" },
   { text: "on" },
@@ -27,17 +30,16 @@ const words = [
 const Post = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [suggesting, setSuggesting] = useState(false); // State for loading suggest button
+  const [suggesting, setSuggesting] = useState(false);
   const [toast, setToast] = useState<{ title: string; description?: string } | null>(null);
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
-      // Use data object directly (e.g., data.name, data.message)
       const response = await axios.post("/api/post-messages", data);
 
       if (response.data.success) {
@@ -51,7 +53,7 @@ const Post = () => {
         }, 2000);
       }
     } catch (error) {
-      console.error("Error submitting post:", error); // Handle error
+      console.error("Error submitting post:", error);
       setToast({
         title: "Error",
         description: "There was an issue posting your thought. Please try again.",
@@ -62,12 +64,11 @@ const Post = () => {
   };
 
   const onSuggest = async () => {
-    setSuggesting(true); // Set suggesting state to true while fetching suggestion
+    setSuggesting(true);
     try {
       const response = await axios.post("/api/suggest-messages");
 
       if (response.data && response.data.messages) {
-        // Fill the message box with the suggested message
         setValue("message", response.data.messages);
         setToast({
           title: "Suggestion Added",
@@ -80,13 +81,13 @@ const Post = () => {
         });
       }
     } catch (error) {
-      console.error("Error fetching suggested message:", error); // Handle error
+      console.error("Error fetching suggested message:", error);
       setToast({
         title: "Error",
         description: "Unable to fetch a suggested message. Please try again.",
       });
     } finally {
-      setSuggesting(false); // Reset suggesting state to false
+      setSuggesting(false);
     }
   };
 
@@ -125,13 +126,7 @@ const Post = () => {
                   className="shadow-lg border border-gray-400 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-black"
                   placeholder="Enter your name"
                 />
-                {errors.name && <p className="text-red-500 text-xs italic">{errors.message && (
-                  <ul className="text-red-500 text-xs italic">
-                    {Object.entries(errors.message).map(([fieldName, error]) => (
-                      <li key={fieldName}>{error.message}</li>
-                    ))}
-                  </ul>
-                )}</p>}
+                {errors.name && <p className="text-red-500 text-xs italic">{errors.name.message}</p>}
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="message">Message</label>
@@ -141,13 +136,7 @@ const Post = () => {
                   className="shadow-lg border border-gray-400 rounded-md w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-black"
                   placeholder="Enter your message"
                 />
-                {errors.message && <p className="text-red-500 text-xs italic">{errors.message && (
-                  <ul className="text-red-500 text-xs italic">
-                    {Object.entries(errors.message).map(([fieldName, error]) => (
-                      <li key={fieldName}>{error.message}</li>
-                    ))}
-                  </ul>
-                )}</p>}
+                {errors.message && <p className="text-red-500 text-xs italic">{errors.message.message}</p>}
               </div>
 
               <div className="flex items-center justify-between">
