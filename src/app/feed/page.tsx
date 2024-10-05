@@ -1,9 +1,16 @@
-'use client'
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
+// Define the Post interface
+interface Post {
+  _id: string;
+  message: string;
+  name: string;
+  createdAt: string; // Adjust if needed
+}
+
 const Feed = () => {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]); // Use the Post interface
 
   // Fetch posts from the backend
   useEffect(() => {
@@ -26,15 +33,15 @@ const Feed = () => {
     <div className='flex lg:px-40 sm:mx-20 md:mx-20 mt-10 flex-col'>
       <div>
         <div className='flex flex-row justify-evenly'>
-        <div>
-        <h1 className='font-extrabold text-3xl text-gray-900'>What’s on Everyone’s Mind?</h1>
-        <h4 className='font-semibold mt-4'>See what others are saying and add your voice to the mix. Your thoughts matter!</h4>
-        </div>
-        <div>
-        <Link href='/'><button className='bg-black text-white px-4 py-2 rounded shadow-lg'>
-          Home
-        </button></Link>
-        </div>
+          <div>
+            <h1 className='font-extrabold text-3xl text-gray-900'>What’s on Everyone’s Mind?</h1>
+            <h4 className='font-semibold mt-4'>See what others are saying and add your voice to the mix. Your thoughts matter!</h4>
+          </div>
+          <div>
+            <Link href='/'><button className='bg-black text-white px-4 py-2 rounded shadow-lg'>
+              Home
+            </button></Link>
+          </div>
         </div>
         <hr className='mt-4 border-t border-gray-500' />
       </div>
