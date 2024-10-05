@@ -1,10 +1,16 @@
-"use client"
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import { CardStack } from "../ui/card-stack";
-import Loading from './loading'; // Import your loading component
+import Loading from "./loading"; // Import your loading component
+
+interface Post {
+  _id: string;
+  name: string;
+  createdAt: string;
+  message: string;
+}
 
 export function CardStackDemo() {
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true); // New loading state
 
   useEffect(() => {
@@ -12,7 +18,7 @@ export function CardStackDemo() {
     const fetchData = async () => {
       setLoading(true); // Set loading to true before fetching
       try {
-        const response = await fetch('/api/get-messages'); // Your API endpoint
+        const response = await fetch("/api/get-messages"); // Your API endpoint
         const data = await response.json();
         if (data.success) {
           setPosts(data.data);

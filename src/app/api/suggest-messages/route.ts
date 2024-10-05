@@ -8,6 +8,7 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 export const runtime = 'edge';
 
 export async function POST(req: Request) {
+  const requestBody = await req.json();
   try {
     const prompt = 
       "Create one positive and uplifting message suitable for an anonymous social messaging platform. The messages should encourage users to express themselves and share their thoughts in a friendly manner. For example, your output should be structured like this: 'Remember, every day is a fresh start!'.";
@@ -16,10 +17,12 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      messages: result.response.text(), // Gemini AI's generated text
+      messages: result.response.text(), 
     }, { status: 200 });
+    
   } catch (error) {
     console.error('Error generating content with Gemini AI:', error);
+    console.log(requestBody)
 
     return NextResponse.json({
       success: false,

@@ -1,5 +1,6 @@
 "use client";
-import React from "react";
+
+import React, { useRef } from "react";
 import {
   motion,
   useAnimationFrame,
@@ -7,8 +8,16 @@ import {
   useMotionValue,
   useTransform,
 } from "framer-motion";
-import { useRef } from "react";
 import { cn } from "@/lib/utils";
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  borderRadius?: string;
+  children: React.ReactNode;
+  as?: React.ElementType; // Use ElementType for component type
+  containerClassName?: string;
+  borderClassName?: string;
+  duration?: number;
+}
 
 export function Button({
   borderRadius = "1.75rem",
@@ -19,20 +28,11 @@ export function Button({
   duration,
   className,
   ...otherProps
-}: {
-  borderRadius?: string;
-  children: React.ReactNode;
-  as?: any;
-  containerClassName?: string;
-  borderClassName?: string;
-  duration?: number;
-  className?: string;
-  [key: string]: any;
-}) {
+}: ButtonProps) {
   return (
     <Component
       className={cn(
-        "bg-transparent relative text-xl p-1 overflow-hidden ",
+        "bg-transparent relative text-xl p-1 overflow-hidden",
         containerClassName
       )}
       style={{
@@ -69,20 +69,21 @@ export function Button({
   );
 }
 
+interface MovingBorderProps extends React.SVGProps<SVGSVGElement> {
+  children: React.ReactNode;
+  duration?: number;
+  rx?: string;
+  ry?: string;
+}
+
 export const MovingBorder = ({
   children,
   duration = 2000,
   rx,
   ry,
   ...otherProps
-}: {
-  children: React.ReactNode;
-  duration?: number;
-  rx?: string;
-  ry?: string;
-  [key: string]: any;
-}) => {
-  const pathRef = useRef<any>();
+}: MovingBorderProps) => {
+  const pathRef = useRef<SVGRectElement | null>(null); // Use SVGRectElement
   const progress = useMotionValue<number>(0);
 
   useAnimationFrame((time) => {

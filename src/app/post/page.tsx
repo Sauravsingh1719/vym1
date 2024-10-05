@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,7 +10,6 @@ import { CardStackDemo } from "@/components/Card/Card";
 import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 import Toast from "@/components/ui/Toast";
 import Link from "next/link";
-
 
 // Validation schema using Zod
 const schema = z.object({
@@ -35,14 +34,11 @@ const Post = () => {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = async (data: any) => { 
+  const onSubmit = async (data: any) => {
     setLoading(true);
     try {
-      const { name, message } = data; // Destructure specific fields
-      const response = await axios.post("/api/post-messages", {
-        ...data, // Use the entire data object
-        createdAt: new Date().toISOString(),
-      });
+      // Use data object directly (e.g., data.name, data.message)
+      const response = await axios.post("/api/post-messages", data);
 
       if (response.data.success) {
         setToast({
@@ -55,6 +51,7 @@ const Post = () => {
         }, 2000);
       }
     } catch (error) {
+      console.error("Error submitting post:", error); // Handle error
       setToast({
         title: "Error",
         description: "There was an issue posting your thought. Please try again.",
@@ -83,6 +80,7 @@ const Post = () => {
         });
       }
     } catch (error) {
+      console.error("Error fetching suggested message:", error); // Handle error
       setToast({
         title: "Error",
         description: "Unable to fetch a suggested message. Please try again.",
@@ -128,12 +126,12 @@ const Post = () => {
                   placeholder="Enter your name"
                 />
                 {errors.name && <p className="text-red-500 text-xs italic">{errors.message && (
-                        <ul className="text-red-500 text-xs italic">
-                          {Object.entries(errors.message).map(([fieldName, error]) => (
-                            <li key={fieldName}>{error.message}</li>
-                          ))}
-                        </ul>
-                      )}</p>}
+                  <ul className="text-red-500 text-xs italic">
+                    {Object.entries(errors.message).map(([fieldName, error]) => (
+                      <li key={fieldName}>{error.message}</li>
+                    ))}
+                  </ul>
+                )}</p>}
               </div>
               <div className="mb-4">
                 <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="message">Message</label>
@@ -144,12 +142,12 @@ const Post = () => {
                   placeholder="Enter your message"
                 />
                 {errors.message && <p className="text-red-500 text-xs italic">{errors.message && (
-                    <ul className="text-red-500 text-xs italic">
-                      {Object.entries(errors.message).map(([fieldName, error]) => (
-                        <li key={fieldName}>{error.message}</li>
-                      ))}
-                    </ul>
-                  )}</p>}
+                  <ul className="text-red-500 text-xs italic">
+                    {Object.entries(errors.message).map(([fieldName, error]) => (
+                      <li key={fieldName}>{error.message}</li>
+                    ))}
+                  </ul>
+                )}</p>}
               </div>
 
               <div className="flex items-center justify-between">
